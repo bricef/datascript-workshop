@@ -1,5 +1,43 @@
 (ns datascript-workshop.woofie
-  (:require [reagent.core :as reagent :refer [atom]]))
+  (:require [reagent.core :as reagent :refer [atom]]
+            [datascript :as d]))
+
+
+;; Creates a DataScript "connection"
+;; (really an atom with the current DB value)
+(def conn (d/create-conn))
+
+;; Add some data
+(d/transact! conn
+   [{:name "Rex" :age 3 :sex "m"
+     :breed "Alsatian" :owner "Marco Polo"}
+    {:name "Sally" :age 4 :sex "f"
+     :breed "Yorkshire Terrier" :owner "Mrs Pollywell"}
+    {:name "Snowy" :age 2 :sex "m"
+     :breed "Wire Fox Terrier" :owner "Tintin"}
+    {:name "Fido" :age 4 :sex "m"
+     :breed "Basset Hound" :owner "Marco Polo"}
+    {:name "Sam" :age 6 :sex "f"
+     :breed "Alsatian" :owner "Guy Fawkes"}])
+
+; Datascript Queries
+
+(def q-dog-names '[:find ?n :where [?e :name ?n]])
+
+(def q-pairings-purebreed
+  '[:find ?m ?f
+    :where [?e :name ?m]
+           [?e :sex "m"]
+           [?e :breed ?b]
+           [?a :name ?f]
+           [?a :sex "f"]
+           [?a :breed ?b]
+          ])
+
+(comment
+  (d/q q-dog-names @conn)
+  (d/q q-pairings-purebreed @conn)
+  )
 
 (def app-state (atom {:number-users 0}))
 
@@ -14,6 +52,22 @@
      [:p (str "Number of dogs on site: " (:number-users @app-state))]]
 
     [:div {:class "user-tools"}
-     [:button {:on-click (new-user!)} "Register"]]])
+     [:button {:on-click (new-user!)} "Register"]]
+
+    [:div {:class "members"}
+     [:h3 "Members"]
+     [:ul
+      (map
+       (fn [n] [:li (str (n 0))])
+       (d/q q-dog-names @conn))]]
+
+    [:div {:class "matches"}
+     [:h3 "Matches"]
+     [:ul
+      (map
+       (fn [p] [:li (apply str (p 0) " and " (p 1))])
+       (d/q q-pairings-purebreed @conn))]]
+
+    ])
 
 (reagent/render-component [woofie] (.-body js/document))
