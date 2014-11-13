@@ -49,10 +49,18 @@
   (d/q q-pairings-all @conn)
   )
 
+
 (def app-state (atom {:number-users 0}))
 
 (defn new-user! []
   (swap! app-state #(update-in %1 [:number-users] inc)))
+
+(defn add-betty! []
+  (d/transact! conn [{:name "Betty"
+                      :age 3
+                      :sex "f"
+                      :breed "Wire Fox Terrier"
+                      :owner "George Orwell"}]))
 
 (defn woofie []
    [:div
@@ -62,7 +70,9 @@
      [:p (str "Number of dogs on site: " (:number-users @app-state))]]
 
     [:div {:class "user-tools"}
-     [:button {:on-click (new-user!)} "Register"]]
+     [:button {:on-click #(new-user!)} "Register"]
+     [:button {:on-click #(add-betty!)} "Add betty"]
+     ]
 
     [:div {:class "members"}
      [:h3 "Members"]
