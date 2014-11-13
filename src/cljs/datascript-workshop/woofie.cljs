@@ -34,9 +34,19 @@
            [?a :breed ?b]
           ])
 
+(def q-pairings-all
+  '[:find ?m ?f
+    :where [?e :name ?m]
+           [?e :sex "m"]
+           [?a :name ?f]
+           [?a :sex "f"]
+          ])
+
+
 (comment
   (d/q q-dog-names @conn)
   (d/q q-pairings-purebreed @conn)
+  (d/q q-pairings-all @conn)
   )
 
 (def app-state (atom {:number-users 0}))
@@ -65,7 +75,7 @@
      [:h3 "Matches"]
      [:ul
       (map
-       (fn [p] [:li (apply str (p 0) " and " (p 1))])
+       (fn [p] [:li (str (p 0) " and " (p 1))])
        (d/q q-pairings-purebreed @conn))]]
 
     ])
