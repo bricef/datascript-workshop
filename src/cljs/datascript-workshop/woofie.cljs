@@ -1,5 +1,6 @@
 (ns datascript-workshop.woofie
   (:require [reagent.core :as reagent :refer [atom]]
+            [datascript-workshop.utils :refer [bind unbind] ]
             [datascript :as d]))
 
 
@@ -63,6 +64,7 @@
                       :owner "George Orwell"}]))
 
 (defn woofie []
+  (let [dogs (bind conn q-dog-names)]
    [:div
     [:header [:h1 "Welcome to Woofie"] [:p "The dog social network"]]
 
@@ -79,7 +81,7 @@
      [:ul
       (map
        (fn [n] [:li (str (n 0))])
-       (d/q q-dog-names @conn))]]
+       @dogs)]]
 
     [:div {:class "matches"}
      [:h3 "Matches"]
@@ -88,6 +90,6 @@
        (fn [p] [:li (str (p 0) " and " (p 1))])
        (d/q q-pairings-purebreed @conn))]]
 
-    ])
+    ]))
 
 (reagent/render-component [woofie] (.-body js/document))
