@@ -1,5 +1,7 @@
 # datascript-workshop
 
+Slides: **[Getting Started With Datascript and Reagent](http://www.slideshare.net/fractallambda/datascript-and-reagent)**
+ 
 A hands-on [Datascript workshop](http://www.meetup.com/Cambridge-NonDysFunctional-Programmers/events/206695032/) for the [Cambridge NonDysFunctional Programmers](http://www.meetup.com/Cambridge-NonDysFunctional-Programmers/) Meetup group
 
 
